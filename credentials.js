@@ -45,7 +45,7 @@ const saveToken = async (code, uid, name) => {
     });
 };
 
-const getCredentials = async (uid) => {
+const getCredentials = async (uid, name) => {
     var dUser = await User.findOne({ uid: uid });
 
     if (dUser == null) {
@@ -53,6 +53,7 @@ const getCredentials = async (uid) => {
             uid: uid,
             waiting: true,
             token: "",
+            username: name
         });
         await newUser.save();
         const {

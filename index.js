@@ -30,7 +30,7 @@ client.on("message", async (msg) => {
         if (msg.content.startsWith(">>")) {
             msg.channel.startTyping();
             question = msg.content.replace(">>", "").trim();
-            var response = await askAssistant(question, msg.author.id);
+            var response = await askAssistant(question, msg.author.id, msg.author.username);
             if (response.ok == true) {
                 await msg.channel.send(response.resp);
                 msg.channel.stopTyping();
@@ -49,9 +49,9 @@ client.on("message", async (msg) => {
 
 client.login(config.token);
 
-async function askAssistant(question, id) {
+async function askAssistant(question, id, username) {
     return new Promise(async (resolve, reject) => {
-        const creds = await credentials(id);
+        const creds = await credentials(id, username);
         if (creds.token == null) {
             resolve({
                 resp: "Your account is not set up yet, check DM",
@@ -61,7 +61,7 @@ async function askAssistant(question, id) {
             });
             return;
         } else {
-            console.log("Asked");
+            console.log("User " + username + " asked: " + question);
             const assistant = new Assistant(creds.token, {
                 deviceId: "test device",
                 deviceModelId: "test device model",
